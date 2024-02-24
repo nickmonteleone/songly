@@ -19,13 +19,8 @@ CREATE TABLE songs (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
   artist TEXT NOT NULL,
-  link TEXT NOT NULL
+  link TEXT NOT NULL,
+  playlist_handle VARCHAR(25)
+    REFERENCES playlists ON DELETE CASCADE
 );
 
-CREATE TABLE playlist_songs (
-  song_id INTEGER
-    REFERENCES songs ON DELETE CASCADE,
-  playlist_handle VARCHAR(25)
-    REFERENCES playlists ON DELETE CASCADE,
-  PRIMARY KEY (song_id, playlist_handle)
-);

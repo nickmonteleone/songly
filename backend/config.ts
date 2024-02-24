@@ -11,9 +11,13 @@ function getDatabaseUri():string {
       : process.env.DATABASE_URL || "postgresql:///songly";
 }
 
+// Speed up bcrypt during tests, since the algorithm safety isn't being tested
+const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
+
 
 export {
   SECRET_KEY,
   PORT,
+  BCRYPT_WORK_FACTOR,
   getDatabaseUri,
 };
