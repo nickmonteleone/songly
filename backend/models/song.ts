@@ -1,78 +1,67 @@
-import db from "../db");
-import { NotFoundError } from "../expressError");
-import { sqlForPartialUpdate } from "../helpers/sql");
+import db from "../db";
+import { NotFoundError } from "../expressError";
+import { sqlForPartialUpdate } from "../helpers/sql";
 
 
-/** Related functions for companies. */
+/** Related functions for playlists. */
 
-class Job {
-  /** Create a job (from data), update db, return new job data.
+class Song {
+  /** Create a song (from data), update db, return new song data.
    *
-   * data should be { title, salary, equity, companyHandle }
+   * data should be { title, artist, link, playlistHandle }
    *
-   * Throws NotFoundError if the company does not exist.
+   * Throws NotFoundError if the playlist does not exist.
    *
-   * Returns { id, title, salary, equity, companyHandle }
+   * Returns { id, title, artist, link, playlistHandle }
    **/
 
   static async create(data) {
-    const companyPreCheck = await db.query(`
+    const playlistPreCheck = await db.query(`
                 SELECT handle
-                FROM companies
+                FROM playlists
                 WHERE handle = $1`,
-        [data.companyHandle]);
-    const company = companyPreCheck.rows[0];
+        [data.playlistHandle]);
+    const playlist = playlistPreCheck.rows[0];
 
-    if (!company) throw new NotFoundError(`No company: ${data.companyHandle}`);
+    if (!playlist) throw new NotFoundError(`No playlist: ${data.playlistHandle}`);
 
     const result = await db.query(`
-        INSERT INTO jobs (title,
-                          salary,
-                          equity,
-                          company_handle)
+        INSERT INTO songs (title,
+                          artist,
+                          link,
+                          playlist_handle)
         VALUES ($1, $2, $3, $4)
         RETURNING
             id,
             title,
-            salary,
-            equity,
-            company_handle AS "companyHandle"`, [
+            artist,
+            link,
+            playlist_handle AS "playlistHandle"`, [
       data.title,
-      data.salary,
-      data.equity,
-      data.companyHandle,
+      data.artist,
+      data.link,
+      data.playlistHandle,
     ]);
-    const job = result.rows[0];
+    const song = result.rows[0];
 
-    return job;
+    return song;
   }
 
   /** Create WHERE clause for filters, to be used by functions that query
    * with filters.
    *
    * searchFilters (all optional):
-   * - minSalary
-   * - hasEquity
    * - title (will find case-insensitive, partial matches)
    *
    * Returns {
-   *  where: "WHERE minSalary >= $1 AND title ILIKE $2",
-   *  vals: [10000, '%Engineer%']
+   *  where: "WHERE title ILIKE $1",
+   *  vals: ['%Closer%']
    * }
    */
 
-  static _filterWhereBuilder({ minSalary, hasEquity, title }) {
+  static _filterWhereBuilder({ title }) {
     let whereParts = [];
     let vals = [];
-
-    if (minSalary !== undefined) {
-      vals.push(minSalary);
-      whereParts.push(`salary >= $${vals.length}`);
-    }
-
-    if (hasEquity === true) {
-      whereParts.push(`equity > 0`);
-    }
 
     if (title !== undefined) {
       vals.push(`%${title}%`);
@@ -86,81 +75,76 @@ class Job {
     return { where, vals };
   }
 
-  /** Find all jobs (optional filter on searchFilters).
+  /** Find all songs (optional filter on searchFilters).
    *
    * searchFilters (all optional):
-   * - minSalary
-   * - hasEquity (true returns only jobs with equity > 0, other values ignored)
    * - title (will find case-insensitive, partial matches)
    *
-   * Returns [{ id, title, salary, equity, companyHandle, companyName }, ...]
+   * Returns [{ id, title, artist, link, playlistHandle, playlistName }, ...]
    * */
 
-  static async findAll({ minSalary, hasEquity, title } = {}) {
+  static async findAll({ title }:any = {}) {
 
-    const { where, vals } = this._filterWhereBuilder({
-      minSalary, hasEquity, title,
-    });
+    const { where, vals } = this._filterWhereBuilder({ title });
 
-    const jobsRes = await db.query(`
+    const songsRes = await db.query(`
         SELECT j.id,
                j.title,
-               j.salary,
-               j.equity,
-               j.company_handle AS "companyHandle",
-               c.name           AS "companyName"
-        FROM jobs j
-                 LEFT JOIN companies AS c ON c.handle = j.company_handle
+               j.artist,
+               j.link,
+               j.playlist_handle AS "playlistHandle",
+               c.name           AS "playlistName"
+        FROM songs j
+                 LEFT JOIN playlists AS c ON c.handle = j.playlist_handle
             ${where}`, vals);
 
-    return jobsRes.rows;
+    return songsRes.rows;
   }
 
-  /** Given a job id, return data about job.
+  /** Given a song id, return data about song.
    *
-   * Returns { id, title, salary, equity, companyHandle, company }
-   *   where company is { handle, name, description, numEmployees, logoUrl }
+   * Returns { id, title, artist, link, playlistHandle, playlist }
+   *   where playlist is { handle, name, description, numEmployees, logoUrl }
    *
    * Throws NotFoundError if not found.
    **/
 
   static async get(id) {
-    const jobRes = await db.query(`
+    const songRes = await db.query(`
         SELECT id,
                title,
-               salary,
-               equity,
-               company_handle AS "companyHandle"
-        FROM jobs
+               artist,
+               link,
+               playlist_handle AS "playlistHandle"
+        FROM songs
         WHERE id = $1`, [id]);
 
-    const job = jobRes.rows[0];
+    const song = songRes.rows[0];
 
-    if (!job) throw new NotFoundError(`No job: ${id}`);
+    if (!song) throw new NotFoundError(`No song: ${id}`);
 
-    const companiesRes = await db.query(`
+    const playlistsRes = await db.query(`
         SELECT handle,
                name,
                description,
-               num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
-        FROM companies
-        WHERE handle = $1`, [job.companyHandle]);
+        FROM playlists
+        WHERE handle = $1`, [song.playlistHandle]);
 
-    delete job.companyHandle;
-    job.company = companiesRes.rows[0];
+    delete song.playlistHandle;
+    song.playlist = playlistsRes.rows[0];
 
-    return job;
+    return song;
   }
 
-  /** Update job data with `data`.
+  /** Update song data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain
    * all the fields; this only changes provided ones.
    *
-   * Data can include: { title, salary, equity }
+   * Data can include: { title, artist, link }
    *
-   * Returns { id, title, salary, equity, companyHandle }
+   * Returns { id, title, artist, link, playlistHandle }
    *
    * Throws NotFoundError if not found.
    */
@@ -172,37 +156,37 @@ class Job {
     const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `
-        UPDATE jobs
+        UPDATE songs
         SET ${setCols}
         WHERE id = ${idVarIdx}
         RETURNING id,
             title,
-            salary,
-            equity,
-            company_handle AS "companyHandle"`;
+            artist,
+            link,
+            playlist_handle AS "playlistHandle"`;
     const result = await db.query(querySql, [...values, id]);
-    const job = result.rows[0];
+    const song = result.rows[0];
 
-    if (!job) throw new NotFoundError(`No job: ${id}`);
+    if (!song) throw new NotFoundError(`No song: ${id}`);
 
-    return job;
+    return song;
   }
 
-  /** Delete given job from database; returns undefined.
+  /** Delete given song from database; returns undefined.
    *
-   * Throws NotFoundError if company not found.
+   * Throws NotFoundError if playlist not found.
    **/
 
   static async remove(id) {
     const result = await db.query(
         `DELETE
-         FROM jobs
+         FROM songs
          WHERE id = $1
          RETURNING id`, [id]);
-    const job = result.rows[0];
+    const song = result.rows[0];
 
-    if (!job) throw new NotFoundError(`No job: ${id}`);
+    if (!song) throw new NotFoundError(`No song: ${id}`);
   }
 }
 
-module.exports = Job;
+export default Song;

@@ -1,13 +1,13 @@
-import { NotFoundError, BadRequestError } from "../expressError.js");
-import db from "../db.js");
-import Job from "./job.js");
+import { NotFoundError, BadRequestError } from "../expressError";
+import db from "../db";
+import Song from "./song";
 import {
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testJobIds,
-} from "./_testCommon.js");
+  testSongIds,
+} from "./_testCommon";
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -17,24 +17,24 @@ afterAll(commonAfterAll);
 /************************************** create */
 
 describe("create", function () {
-  let newJob = {
-    companyHandle: "c1",
+  let newSong = {
+    playlistHandle: "c1",
     title: "Test",
-    salary: 100,
-    equity: "0.1",
+    artist: "test",
+    link: "test.com",
   };
 
   test("works", async function () {
-    let job = await Job.create(newJob);
-    expect(job).toEqual({
-      ...newJob,
+    let song = await Song.create(newSong);
+    expect(song).toEqual({
+      ...newSong,
       id: expect.any(Number),
     });
   });
 
-  test("not found if no such company", async function () {
+  test("not found if no such playlist", async function () {
     try {
-      await Job.create({...newJob, companyHandle: "nope"});
+      await Song.create({...newSong, playlistHandle: "nope"});
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -46,103 +46,53 @@ describe("create", function () {
 
 describe("findAll", function () {
   test("works: no filter", async function () {
-    let jobs = await Job.findAll();
-    expect(jobs).toEqual([
+    let songs = await Song.findAll();
+    expect(songs).toEqual([
       {
-        id: testJobIds[0],
-        title: "Job1",
-        salary: 100,
-        equity: "0.1",
-        companyHandle: "c1",
-        companyName: "C1",
+        id: testSongIds[0],
+        title: "Song1",
+        artist: "ArtistA",
+        link: "soundcloud.com",
+        playlistHandle: "c1",
+        playlistName: "C1",
       },
       {
-        id: testJobIds[1],
-        title: "Job2",
-        salary: 200,
-        equity: "0.2",
-        companyHandle: "c1",
-        companyName: "C1",
+        id: testSongIds[1],
+        title: "Song2",
+        artist: "ArtistA",
+        link: "soundcloud.com",
+        playlistHandle: "c1",
+        playlistName: "C1",
       },
       {
-        id: testJobIds[2],
-        title: "Job3",
-        salary: 300,
-        equity: "0",
-        companyHandle: "c1",
-        companyName: "C1",
+        id: testSongIds[2],
+        title: "Song3",
+        artist: "ArtistA",
+        link: "soundcloud.com",
+        playlistHandle: "c1",
+        playlistName: "C1",
       },
       {
-        id: testJobIds[3],
-        title: "Job4",
-        salary: null,
-        equity: null,
-        companyHandle: "c1",
-        companyName: "C1",
-      },
-    ]);
-  });
-
-  test("works: by min salary", async function () {
-    let jobs = await Job.findAll({ minSalary: 250 });
-    expect(jobs).toEqual([
-      {
-        id: testJobIds[2],
-        title: "Job3",
-        salary: 300,
-        equity: "0",
-        companyHandle: "c1",
-        companyName: "C1",
-      },
-    ]);
-  });
-
-  test("works: by equity", async function () {
-    let jobs = await Job.findAll({ hasEquity: true });
-    expect(jobs).toEqual([
-      {
-        id: testJobIds[0],
-        title: "Job1",
-        salary: 100,
-        equity: "0.1",
-        companyHandle: "c1",
-        companyName: "C1",
-      },
-      {
-        id: testJobIds[1],
-        title: "Job2",
-        salary: 200,
-        equity: "0.2",
-        companyHandle: "c1",
-        companyName: "C1",
-      },
-    ]);
-  });
-
-  test("works: by min salary & equity", async function () {
-    let jobs = await Job.findAll({ minSalary: 150, hasEquity: true });
-    expect(jobs).toEqual([
-      {
-        id: testJobIds[1],
-        title: "Job2",
-        salary: 200,
-        equity: "0.2",
-        companyHandle: "c1",
-        companyName: "C1",
+        id: testSongIds[3],
+        title: "Song4",
+        artist: "ArtistB",
+        link: "soundcloud.com",
+        playlistHandle: "c1",
+        playlistName: "C1",
       },
     ]);
   });
 
   test("works: by name", async function () {
-    let jobs = await Job.findAll({ title: "ob1" });
-    expect(jobs).toEqual([
+    let songs = await Song.findAll({ title: "Song1" });
+    expect(songs).toEqual([
       {
-        id: testJobIds[0],
-        title: "Job1",
-        salary: 100,
-        equity: "0.1",
-        companyHandle: "c1",
-        companyName: "C1",
+        id: testSongIds[0],
+        title: "Song1",
+        artist: "ArtistA",
+        link: "soundcloud.com",
+        playlistHandle: "c1",
+        playlistName: "C1",
       },
     ]);
   });
@@ -152,25 +102,24 @@ describe("findAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    let job = await Job.get(testJobIds[0]);
-    expect(job).toEqual({
-      id: testJobIds[0],
-      title: "Job1",
-      salary: 100,
-      equity: "0.1",
-      company: {
+    let song = await Song.get(testSongIds[0]);
+    expect(song).toEqual({
+      id: testSongIds[0],
+      title: "Song1",
+      artist: "ArtistA",
+      link: "soundcloud.com",
+      playlist: {
         handle: "c1",
         name: "C1",
         description: "Desc1",
-        numEmployees: 1,
         logoUrl: "http://c1.img",
       },
     });
   });
 
-  test("not found if no such job", async function () {
+  test("not found if no such song", async function () {
     try {
-      await Job.get(0);
+      await Song.get(0);
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -183,21 +132,21 @@ describe("get", function () {
 describe("update", function () {
   let updateData = {
     title: "New",
-    salary: 500,
-    equity: "0.5",
+    artist: "ArtistA",
+    link: "soundcloud.com",
   };
   test("works", async function () {
-    let job = await Job.update(testJobIds[0], updateData);
-    expect(job).toEqual({
-      id: testJobIds[0],
-      companyHandle: "c1",
+    let song = await Song.update(testSongIds[0], updateData);
+    expect(song).toEqual({
+      id: testSongIds[0],
+      playlistHandle: "c1",
       ...updateData,
     });
   });
 
-  test("not found if no such job", async function () {
+  test("not found if no such song", async function () {
     try {
-      await Job.update(0, {
+      await Song.update(0, {
         title: "test",
       });
       throw new Error("fail test, you shouldn't get here");
@@ -208,7 +157,7 @@ describe("update", function () {
 
   test("bad request with no data", async function () {
     try {
-      await Job.update(testJobIds[0], {});
+      await Song.update(testSongIds[0], {});
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -220,15 +169,15 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    await Job.remove(testJobIds[0]);
+    await Song.remove(testSongIds[0]);
     const res = await db.query(
-        "SELECT id FROM jobs WHERE id=$1", [testJobIds[0]]);
+        "SELECT id FROM songs WHERE id=$1", [testSongIds[0]]);
     expect(res.rows.length).toEqual(0);
   });
 
-  test("not found if no such job", async function () {
+  test("not found if no such song", async function () {
     try {
-      await Job.remove(0);
+      await Song.remove(0);
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
