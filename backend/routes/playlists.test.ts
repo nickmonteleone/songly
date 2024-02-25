@@ -25,7 +25,6 @@ describe("POST /playlists", function () {
     name: "New",
     logoUrl: "http://new.img",
     description: "DescNew",
-    numEmployees: 10,
   };
 
   test("ok for admin", async function () {
@@ -52,7 +51,6 @@ describe("POST /playlists", function () {
         .post("/playlists")
         .send({
           handle: "new",
-          numEmployees: 10,
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -103,55 +101,34 @@ describe("GET /playlists", function () {
               handle: "c1",
               name: "C1",
               description: "Desc1",
-              numEmployees: 1,
               logoUrl: "http://c1.img",
             },
             {
               handle: "c2",
               name: "C2",
               description: "Desc2",
-              numEmployees: 2,
               logoUrl: "http://c2.img",
             },
             {
               handle: "c3",
               name: "C3",
               description: "Desc3",
-              numEmployees: 3,
               logoUrl: "http://c3.img",
             },
           ],
     });
   });
 
-  test("works: filtering", async function () {
-    const resp = await request(app)
-        .get("/playlists")
-        .query({ minEmployees: 3 });
-    expect(resp.body).toEqual({
-      playlists: [
-        {
-          handle: "c3",
-          name: "C3",
-          description: "Desc3",
-          numEmployees: 3,
-          logoUrl: "http://c3.img",
-        },
-      ],
-    });
-  });
-
   test("works: filtering on all filters", async function () {
     const resp = await request(app)
         .get("/playlists")
-        .query({ minEmployees: 2, maxEmployees: 3, nameLike: "3" });
+        .query({ nameLike: "3" });
     expect(resp.body).toEqual({
       playlists: [
         {
           handle: "c3",
           name: "C3",
           description: "Desc3",
-          numEmployees: 3,
           logoUrl: "http://c3.img",
         },
       ],
@@ -161,7 +138,7 @@ describe("GET /playlists", function () {
   test("bad request if invalid filter key", async function () {
     const resp = await request(app)
         .get("/playlists")
-        .query({ minEmployees: 2, nope: "nope" });
+        .query({ nope: "nope" });
     expect(resp.statusCode).toEqual(400);
   });
 });
@@ -176,12 +153,11 @@ describe("GET /playlists/:handle", function () {
         handle: "c1",
         name: "C1",
         description: "Desc1",
-        numEmployees: 1,
         logoUrl: "http://c1.img",
         songs: [
-          { id: testSongIds[0], title: "J1", equity: "0.1", salary: 1 },
-          { id: testSongIds[1], title: "J2", equity: "0.2", salary: 2 },
-          { id: testSongIds[2], title: "J3", equity: null, salary: 3 },
+          { id: testSongIds[0], title: "Song1", artist: "ArtistA", link: "soundcloud.com" },
+          { id: testSongIds[1], title: "Song2", artist: "ArtistB", link: "soundcloud.com" },
+          { id: testSongIds[2], title: "Song3", artist: "ArtistB", link: "soundcloud.com" },
         ],
       },
     });
@@ -194,7 +170,6 @@ describe("GET /playlists/:handle", function () {
         handle: "c2",
         name: "C2",
         description: "Desc2",
-        numEmployees: 2,
         logoUrl: "http://c2.img",
         songs: [],
       },
@@ -222,7 +197,6 @@ describe("PATCH /playlists/:handle", function () {
         handle: "c1",
         name: "C1-new",
         description: "Desc1",
-        numEmployees: 1,
         logoUrl: "http://c1.img",
       },
     });

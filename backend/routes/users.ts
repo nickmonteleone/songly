@@ -33,7 +33,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
-    throw new BadRequestError(errs);
+    throw new BadRequestError(errs[0]);
   }
 
   const user = await User.register(req.body);
@@ -87,7 +87,7 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, n
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
-    throw new BadRequestError(errs);
+    throw new BadRequestError(errs[0]);
   }
 
   const user = await User.update(req.params.username, req.body);
@@ -106,18 +106,5 @@ router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, 
 });
 
 
-/** POST /[username]/songs/[id]  { state } => { application }
- *
- * Returns {"applied": songId}
- *
- * Authorization required: admin or same-user-as-:username
- * */
 
-router.post("/:username/songs/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
-  const songId = +req.params.id;
-  await User.applyToSong(req.params.username, songId);
-  return res.json({ applied: songId });
-});
-
-
-module.exports = router;
+export default router;

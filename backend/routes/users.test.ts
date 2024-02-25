@@ -217,7 +217,6 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
-        applications: [testSongIds[0]],
       },
     });
   });
@@ -233,7 +232,6 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
-        applications: [testSongIds[0]],
       },
     });
   });
@@ -436,70 +434,5 @@ describe("DELETE /users/:username", function () {
   test("unauth if user missing - anon", async function () {
     const resp = await request(app).delete(`/users/nope`);
     expect(resp.statusCode).toEqual(401);
-  });
-});
-
-/************************************** POST /users/:username/songs/:id */
-
-describe("POST /users/:username/songs/:id", function () {
-  test("works for admin", async function () {
-    const resp = await request(app)
-        .post(`/users/u1/songs/${testSongIds[1]}`)
-        .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({ applied: testSongIds[1] });
-  });
-
-  test("works for same user", async function () {
-    const resp = await request(app)
-        .post(`/users/u1/songs/${testSongIds[1]}`)
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({ applied: testSongIds[1] });
-  });
-
-  test("unauth for others", async function () {
-    const resp = await request(app)
-        .post(`/users/u1/songs/${testSongIds[1]}`)
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("unauth for anon", async function () {
-    const resp = await request(app)
-        .post(`/users/u1/songs/${testSongIds[1]}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("not found for no such username - admin", async function () {
-    const resp = await request(app)
-        .post(`/users/nope/songs/${testSongIds[1]}`)
-        .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
-  });
-
-  test("unauth for no such username - non-admin", async function () {
-    const resp = await request(app)
-        .post(`/users/nope/songs/${testSongIds[1]}`)
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("unauth for no such username - anon", async function () {
-    const resp = await request(app)
-        .post(`/users/nope/songs/${testSongIds[1]}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("not found for no such song", async function () {
-    const resp = await request(app)
-        .post(`/users/u1/songs/0`)
-        .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
-  });
-
-  test("bad request invalid song id", async function () {
-    const resp = await request(app)
-        .post(`/users/u1/songs/0`)
-        .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
   });
 });

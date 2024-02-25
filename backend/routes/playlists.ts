@@ -69,7 +69,7 @@ router.get("/", async function (req, res, next) {
 /** GET /[handle]  =>  { playlist }
  *
  *  Playlist is { handle, name, description, numEmployees, logoUrl, songs }
- *   where songs is [{ id, title, salary, equity }, ...]
+ *   where songs is [{ id, title, artist, link }, ...]
  *
  * Authorization required: none
  */
@@ -115,5 +115,4 @@ router.delete("/:handle", ensureAdmin, async function (req, res, next) {
   return res.json({ deleted: req.params.handle });
 });
 
-
-module.exports = router;
+export default router;

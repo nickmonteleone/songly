@@ -3,13 +3,6 @@
   "$id": "http://our.playlist.com/songSearch.schema.json",
   "type": "object",
   "properties": {
-    "minSalary": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "hasEquity": {
-      "type": "boolean"
-    },
     "title": {
       "type": "string",
       "minLength": 1

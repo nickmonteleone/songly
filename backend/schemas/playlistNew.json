@@ -16,10 +16,6 @@
     "description": {
       "type": "string"
     },
-    "numEmployees": {
-      "type": "integer",
-      "minimum": 0
-    },
     "logoUrl": {
       "type": "string",
       "format": "uri"

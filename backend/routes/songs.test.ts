@@ -1,6 +1,6 @@
-import request from "supertest");
+import request from "supertest";
 
-import app from "../app");
+import app from "../app";
 
 import {
   commonBeforeAll,
@@ -10,7 +10,7 @@ import {
   testSongIds,
   u1Token,
   adminToken,
-} from "./_testCommon");
+} from "./_testCommon";
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -26,8 +26,8 @@ describe("POST /songs", function () {
         .send({
           playlistHandle: "c1",
           title: "J-new",
-          salary: 10,
-          equity: "0.2",
+          artist: "new",
+          link: "test.com",
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -35,8 +35,8 @@ describe("POST /songs", function () {
       song: {
         id: expect.any(Number),
         title: "J-new",
-        salary: 10,
-        equity: "0.2",
+        artist: "new",
+        link: "test.com",
         playlistHandle: "c1",
       },
     });
@@ -48,8 +48,8 @@ describe("POST /songs", function () {
         .send({
           playlistHandle: "c1",
           title: "J-new",
-          salary: 10,
-          equity: "0.2",
+          artist: "new",
+          link: "test.com",
         })
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
@@ -61,8 +61,8 @@ describe("POST /songs", function () {
         .send({
           playlistHandle: "nope",
           title: "J-new",
-          salary: 10,
-          equity: "0.2",
+          artist: "new",
+          link: "test.com",
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
@@ -84,8 +84,8 @@ describe("POST /songs", function () {
         .send({
           playlistHandle: "c1",
           title: "J-new",
-          salary: "not-a-number",
-          equity: "0.2",
+          artist: 12312,
+          link: 12312,
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -97,8 +97,8 @@ describe("POST /songs", function () {
         .send({
           playlistHandle: "c1",
           title: "J-new",
-          salary: "not-a-number",
-          equity: "0.2",
+          artist: 12312,
+          link: 12312,
         })
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
@@ -110,8 +110,8 @@ describe("POST /songs", function () {
         .send({
           playlistHandle: "c1",
           title: "J-new",
-          salary: "not-a-number",
-          equity: "0.2",
+          artist: 12312,
+          link: 12312,
         });
     expect(resp.statusCode).toEqual(401);
   });
@@ -127,52 +127,25 @@ describe("GET /songs", function () {
           songs: [
             {
               id: expect.any(Number),
-              title: "J1",
-              salary: 1,
-              equity: "0.1",
+              title: "Song1",
+              artist: "ArtistA",
+              link: "soundcloud.com",
               playlistHandle: "c1",
               playlistName: "C1",
             },
             {
               id: expect.any(Number),
-              title: "J2",
-              salary: 2,
-              equity: "0.2",
+              title: "Song2",
+              artist: "ArtistB",
+              link: "soundcloud.com",
               playlistHandle: "c1",
               playlistName: "C1",
             },
             {
               id: expect.any(Number),
-              title: "J3",
-              salary: 3,
-              equity: null,
-              playlistHandle: "c1",
-              playlistName: "C1",
-            },
-          ],
-        },
-    );
-  });
-
-  test("works: filtering", async function () {
-    const resp = await request(app)
-        .get(`/songs`)
-        .query({ hasEquity: true });
-    expect(resp.body).toEqual({
-          songs: [
-            {
-              id: expect.any(Number),
-              title: "J1",
-              salary: 1,
-              equity: "0.1",
-              playlistHandle: "c1",
-              playlistName: "C1",
-            },
-            {
-              id: expect.any(Number),
-              title: "J2",
-              salary: 2,
-              equity: "0.2",
+              title: "Song3",
+              artist: "ArtistB",
+              link: "soundcloud.com",
               playlistHandle: "c1",
               playlistName: "C1",
             },
@@ -181,17 +154,17 @@ describe("GET /songs", function () {
     );
   });
 
-  test("works: filtering on 2 filters", async function () {
+  test("works: filtering on title", async function () {
     const resp = await request(app)
         .get(`/songs`)
-        .query({ minSalary: 2, title: "3" });
+        .query({ title: "3" });
     expect(resp.body).toEqual({
           songs: [
             {
               id: expect.any(Number),
-              title: "J3",
-              salary: 3,
-              equity: null,
+              title: "Song3",
+              artist: "ArtistB",
+              link: "soundcloud.com",
               playlistHandle: "c1",
               playlistName: "C1",
             },
@@ -216,14 +189,13 @@ describe("GET /songs/:id", function () {
     expect(resp.body).toEqual({
       song: {
         id: testSongIds[0],
-        title: "J1",
-        salary: 1,
-        equity: "0.1",
+        title: "Song1",
+        artist: "ArtistA",
+        link: "soundcloud.com",
         playlist: {
           handle: "c1",
           name: "C1",
           description: "Desc1",
-          numEmployees: 1,
           logoUrl: "http://c1.img",
         },
       },
@@ -250,8 +222,8 @@ describe("PATCH /songs/:id", function () {
       song: {
         id: expect.any(Number),
         title: "J-New",
-        salary: 1,
-        equity: "0.1",
+        artist: "ArtistA",
+        link: "soundcloud.com",
         playlistHandle: "c1",
       },
     });
@@ -291,7 +263,7 @@ describe("PATCH /songs/:id", function () {
     const resp = await request(app)
         .patch(`/songs/${testSongIds[0]}`)
         .send({
-          salary: "not-a-number",
+          artist: "not-a-number",
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -301,7 +273,7 @@ describe("PATCH /songs/:id", function () {
     const resp = await request(app)
         .patch(`/songs/${testSongIds[0]}`)
         .send({
-          salary: "not-a-number",
+          artist: 1231,
         })
         .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
@@ -311,7 +283,7 @@ describe("PATCH /songs/:id", function () {
     const resp = await request(app)
         .patch(`/songs/${testSongIds[0]}`)
         .send({
-          salary: "not-a-number",
+          artist: 12311,
         });
     expect(resp.statusCode).toEqual(401);
   });

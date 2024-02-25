@@ -8,11 +8,11 @@
       "minLength": 1,
       "maxLength": 30
     },
-    "salary": {
+    "artist": {
       "type": "integer",
       "minimum": 0
     },
-    "equity": {
+    "link": {
       "type": "string",
       "pattern": "0|(0?\\.[0-9]+)"
     }

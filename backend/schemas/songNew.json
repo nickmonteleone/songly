@@ -13,13 +13,14 @@
       "minLength": 1,
       "maxLength": 30
     },
-    "salary": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "equity": {
+    "artist": {
       "type": "string",
-      "pattern": "0|(0?\\.[0-9]+)"
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "link": {
+      "type": "string",
+      "maxLength": 500
     }
   },
   "additionalProperties": false,
