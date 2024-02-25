@@ -2,16 +2,16 @@ import db from "../db";
 import { BadRequestError, NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
 
-/** Related functions for companies. */
+/** Related functions for playlists. */
 
 class Playlist {
-  /** Create a playlist (from data), update db, return new company data.
+  /** Create a playlist (from data), update db, return new playlist data.
    *
    * data should be { handle, name, description, logoUrl }
    *
    * Returns { handle, name, description, logoUrl }
    *
-   * Throws BadRequestError if company already in database.
+   * Throws BadRequestError if playlist already in database.
    * */
 
   static async create({ handle, name, description, logoUrl }) {
@@ -40,9 +40,9 @@ class Playlist {
       logoUrl,
     ],
     );
-    const company = result.rows[0];
+    const playlist = result.rows[0];
 
-    return company;
+    return playlist;
   }
 
   /** Create WHERE clause for filters, to be used by functions that query
@@ -81,7 +81,7 @@ class Playlist {
    * Returns [{ handle, name, description, logoUrl }, ...]
    * */
 
-  static async findAll(searchFilters: Record<string, string> = {}) {
+  static async findAll(searchFilters: Record<string, string>|any = {}) {
     const { nameLike } = searchFilters;
 
     const { where, vals } = this._filterWhereBuilder({ nameLike });
