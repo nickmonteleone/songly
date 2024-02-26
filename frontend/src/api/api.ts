@@ -1,4 +1,4 @@
-const BASE_URL = process.env['API_BASE_URL'] || "http://localhost:3001";
+const BASE_URL = "http://localhost:3001";
 
 /** API Class.
  *
@@ -14,7 +14,7 @@ class SonglyApi {
 
   static async request(endpoint: string, data: any = {}, method: string = "GET"): Promise<any> {
     const url = new URL(`${BASE_URL}/${endpoint}`);
-    const headers = {
+    const headers:Record<string,string> = {
       authorization: `Bearer ${SonglyApi.token}`,
       'content-type': 'application/json',
     };
@@ -50,8 +50,8 @@ class SonglyApi {
 
   /** Get playlists (filtered by name if not undefined) */
 
-  static async getPlaylists(nameLike: string | void): Promise<any> {
-    let res = await this.request("playlists", { nameLike });
+  static async getPlaylists(): Promise<any> {
+    let res = await this.request("playlists");
     return res.playlists;
   }
 

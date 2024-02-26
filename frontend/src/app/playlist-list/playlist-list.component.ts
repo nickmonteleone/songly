@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import SonglyApi from '../../api/api';
 
 /** Show page with list of playlists.
  *
@@ -18,6 +19,9 @@ import { Component, OnInit } from '@angular/core';
 export class PlaylistListComponent implements OnInit {
   constructor() { }
 
-  ngOnInit(): void {
+
+  async ngOnInit(): Promise<any> {
+    const playlists = await SonglyApi.getPlaylists();
+    console.log("Playlists:", playlists);
   }
 }
