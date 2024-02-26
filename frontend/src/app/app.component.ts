@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 
 @Component({
@@ -8,6 +8,8 @@ import { HomepageComponent } from './homepage/homepage.component';
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
+    RouterLinkActive,
     RouterOutlet,
     HomepageComponent,
   ],
