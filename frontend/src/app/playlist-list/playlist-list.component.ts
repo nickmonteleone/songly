@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import SonglyApi from '../../api/api';
+import { NgFor } from '@angular/common';
 
 /** Show page with list of playlists.
  *
@@ -9,19 +10,23 @@ import SonglyApi from '../../api/api';
  *
  * App -> PlaylistList
  */
+
 @Component({
   selector: 'app-playlist-list',
   standalone: true,
-  imports: [],
+  imports: [
+    NgFor,
+  ],
   templateUrl: './playlist-list.component.html',
   styleUrl: './playlist-list.component.css'
 })
 export class PlaylistListComponent implements OnInit {
+  playlists: any[] = [];
+
   constructor() { }
 
-
   async ngOnInit(): Promise<any> {
-    const playlists = await SonglyApi.getPlaylists();
-    console.log("Playlists:", playlists);
+    this.playlists = await SonglyApi.getPlaylists();
+    console.log("Playlists for component:", this.playlists);
   }
 }

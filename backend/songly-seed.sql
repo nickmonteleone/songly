@@ -18,11 +18,11 @@ INSERT INTO playlists (handle, name, description, logo_url)
 VALUES ('pop',
         'Pop Hits',
         'Pop hits for a good time!',
-        'https://images.unsplash.com/photo-1563891217861-7924b471afb3'),
+        'https://images.unsplash.com/photo-1563891217861-7924b471afb3?w=200'),
         ('rock',
         'Rock Hits',
         'Rock hits to rock out!',
-        'https://images.unsplash.com/photo-1584715642381-6f1c4b452b1c');
+        'https://images.unsplash.com/photo-1584715642381-6f1c4b452b1c?w=200');
 
 
 INSERT INTO songs (title, artist, link, playlist_handle)
