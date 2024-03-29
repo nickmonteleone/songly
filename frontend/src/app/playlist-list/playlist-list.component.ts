@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import SonglyApi from '../../api/api';
 import { NgFor } from '@angular/common';
-import { Playlist } from '../platlist';
+import { Playlist } from '../playlist';
 
 /** Show page with list of playlists.
  *
