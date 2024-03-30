@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import SonglyApi from '../../api/api';
 import { NgFor } from '@angular/common';
-import { Playlist } from '../playlist';
+import { Playlist } from '../interfaces';
 
 /** Show page with list of playlists.
- *
  * On mount, loads playlists from API.
- *
  * This is routed to at /playlists
  *
  * App -> PlaylistList

@@ -1,0 +1,10 @@
+<div class="PlaylistDetail">
+  <div class="container text-center text-white mt-3">
+    <h1 class="mb-4 fw-bold">Playlist Detail</h1>
+    <p class="lead">Songs in your playlists are here.</p>
+    <div *ngFor="let song of songs" class="PlaylistDetail-song bg-dark">
+      <div class="pl-4">
+        <h3>{{ song.name }}</h3>
+      </div>
+    </div>
+  </div>

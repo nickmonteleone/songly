@@ -3,3 +3,8 @@ export interface Playlist {
   description: string;
   logoUrl: string;
 }
+
+export interface Song {
+  name: string;
+  description: string;
+}
