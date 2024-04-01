@@ -58,7 +58,7 @@ class SonglyApi {
   /** Get details on a playlist by handle. */
 
   static async getPlaylist(handle: string | void): Promise<any> {
-    let res = await this.request(`companies/${handle}`);
+    let res = await this.request(`playlists/${handle}`);
     return res.playlist;
   }
 

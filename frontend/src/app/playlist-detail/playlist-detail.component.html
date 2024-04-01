@@ -1,10 +1,12 @@
 <div class="PlaylistDetail">
   <div class="container text-center text-white mt-3">
-    <h1 class="mb-4 fw-bold">Playlist Detail</h1>
+    <h1 class="mb-4 fw-bold">Playlist: {{ playlistHandle }} </h1>
     <p class="lead">Songs in your playlists are here.</p>
     <div *ngFor="let song of songs" class="PlaylistDetail-song bg-dark">
       <div class="pl-4">
-        <h3>{{ song.name }}</h3>
+        <h3>{{ song.title }}</h3>
+        <h4>{{ song.artist }}</h4>
+        <a href="{{ song.link }}">link</a>
       </div>
     </div>
   </div>

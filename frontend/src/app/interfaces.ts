@@ -2,9 +2,12 @@ export interface Playlist {
   name: string;
   description: string;
   logoUrl: string;
+  handle: string;
+  songs: Song[];
 }
 
 export interface Song {
-  name: string;
-  description: string;
+  title: string;
+  artist: string;
+  link: string;
 }

@@ -3,10 +3,12 @@
     <h1 class="mb-4 fw-bold">Playlists</h1>
     <p class="lead">Your playlists are here.</p>
     <div *ngFor="let playlist of playlists" class="PlaylistList-card bg-dark">
-      <div class="pl-4">
-        <h3>{{ playlist.name }}</h3>
-        <p>{{ playlist.description }}</p>
-      </div>
-      <img src="{{ playlist.logoUrl }}" alt="logo" className="float-end ms-5">
+      <a href="playlists/{{ playlist.handle }}">
+        <div class="pl-4">
+          <h3>{{ playlist.name }}</h3>
+          <p>{{ playlist.description }}</p>
+        </div>
+        <img src="{{ playlist.logoUrl }}" alt="logo" className="float-end ms-5">
+      </a>
     </div>
   </div>
