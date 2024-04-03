@@ -41,8 +41,6 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  *   { songs: [ { id, title, artist, link, playlistHandle, playlistName }, ...] }
  *
  * Can provide search filter in query:
- * - minSalary
- * - hasEquity (true returns only songs with link > 0, other values ignored)
  * - title (will find case-insensitive, partial matches)
 
  * Authorization required: none
