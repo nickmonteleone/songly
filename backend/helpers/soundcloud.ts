@@ -24,10 +24,9 @@ class SoundcloudApi {
     if (endpoint !== "oauth2/token") {
       const currentTime = Date.now();
       if (currentTime > this.tokenExpirationTime) {
-        // token is expired, get a new one
         await this.getAccessToken();
-      } else if (currentTime > this.tokenExpirationTime - 300000) { // 5 minutes before expiration
-        // token is about to expire, refresh it
+        // if the token is about to expire (5 min), refresh it
+      } else if (currentTime > this.tokenExpirationTime - 300000) {
         await this.refreshAccessToken();
       }
     }
@@ -36,6 +35,7 @@ class SoundcloudApi {
     const headers: Record<string, string> = {
       'accept': `application/json; charset=utf-8`,
       'content-type': 'application/x-www-form-urlencoded',
+      'Authorization': `OAuth ${this.accessToken || ""}`,
     };
 
     url.search = (method === "GET" || endpoint === "oauth2/token")
@@ -95,10 +95,11 @@ class SoundcloudApi {
     this.tokenExpirationTime = Date.now() + res.expires_in * 1000;
   }
 
-  /** Get a track */
+  /** Get a track id from URL*/
 
-  static async getTrack(trackId: string): Promise<any> {
-    return await this.request(`tracks/${trackId}`);
+  static async getTrackId(link: string): Promise<string> {
+    const res = await this.request(`resolve`, { url: link });
+    return String(res.id);
   }
 }
 
