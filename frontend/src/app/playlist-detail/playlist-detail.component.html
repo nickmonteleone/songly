@@ -2,11 +2,14 @@
   <div class="container text-center text-white mt-3">
     <h1 class="mb-4 fw-bold">Playlist: {{ playlistHandle }} </h1>
     <p class="lead">Songs in your playlists are here.</p>
-    <div *ngFor="let song of songs" class="PlaylistDetail-song bg-dark">
-      <div class="pl-4">
-        <h3>{{ song.title }}</h3>
-        <h4>{{ song.artist }}</h4>
-        <a href="{{ song.link }}">link</a>
+    <div *ngFor="let song of songs">
+      <div class="PlaylistDetail-card bg-dark">
+        <div class="pl-4" >
+          <h3>{{ song.title }}</h3>
+          <p>{{ song.artist }}</p>
+          <a href="{{ song.link }}">link to song on Soundcloud</a>
+        </div>
+        <img src="assets/songly-logo.png" alt="logo" className="float-end ms-5">
       </div>
     </div>
   </div>

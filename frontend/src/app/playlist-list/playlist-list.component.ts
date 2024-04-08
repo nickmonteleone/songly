@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import SonglyApi from '../../api/api';
 import { NgFor } from '@angular/common';
-import { Playlist } from '../interfaces';
+import { IPlaylist } from '../interfaces';
 
 /** Show page with list of playlists.
  * On mount, loads playlists from API.
@@ -20,7 +20,7 @@ import { Playlist } from '../interfaces';
   styleUrl: './playlist-list.component.css'
 })
 export class PlaylistListComponent implements OnInit {
-  playlists: Playlist[] = [];
+  playlists: IPlaylist[] = [];
 
   constructor() { }
 

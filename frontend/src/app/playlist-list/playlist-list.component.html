@@ -2,8 +2,8 @@
   <div class="container text-center text-white mt-3">
     <h1 class="mb-4 fw-bold">Playlists</h1>
     <p class="lead">Your playlists are here.</p>
-    <div *ngFor="let playlist of playlists" class="PlaylistList-card bg-dark">
-      <a href="playlists/{{ playlist.handle }}">
+    <div *ngFor="let playlist of playlists">
+      <a href="playlists/{{ playlist.handle }}" class="PlaylistList-card bg-dark">
         <div class="pl-4">
           <h3>{{ playlist.name }}</h3>
           <p>{{ playlist.description }}</p>

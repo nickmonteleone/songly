@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import SonglyApi from '../../api/api';
 import { NgFor } from '@angular/common';
-import { Playlist, Song } from '../interfaces';
+import { IPlaylist, ISong } from '../interfaces';
 
 /** Show page with details for playlist with songs.
  * On mount, loads playlist detail from API.
@@ -21,9 +21,9 @@ import { Playlist, Song } from '../interfaces';
   styleUrl: './playlist-detail.component.css'
 })
 export class PlaylistDetailComponent {
-  playlist: Playlist | null = null;
+  playlist: IPlaylist | null = null;
   playlistHandle: string = "";
-  songs: Song[] = [];
+  songs: ISong[] = [];
 
   constructor(private route: ActivatedRoute) {
     this.route.params.subscribe(

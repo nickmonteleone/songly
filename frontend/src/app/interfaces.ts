@@ -1,12 +1,12 @@
-export interface Playlist {
+export interface IPlaylist {
   name: string;
   description: string;
   logoUrl: string;
   handle: string;
-  songs: Song[];
+  songs: ISong[];
 }
 
-export interface Song {
+export interface ISong {
   title: string;
   artist: string;
   link: string;
