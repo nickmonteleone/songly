@@ -34,7 +34,6 @@ class SoundcloudApi {
     const url = new URL(`${BASE_URL}/${endpoint}`);
     const headers: Record<string, string> = {
       'accept': `application/json; charset=utf-8`,
-      'content-type': 'application/x-www-form-urlencoded',
       'Authorization': `OAuth ${this.accessToken || ""}`,
     };
 
@@ -101,6 +100,13 @@ class SoundcloudApi {
     const res = await this.request(`resolve`, { url: link });
     return String(res.id);
   }
+
+  static async getStreamUrl(trackId: string): Promise<string> {
+    const res = await this.request(`tracks/${trackId}/streams`);
+    return res.http_mp3_128_url;
+  }
+
+
 }
 
 

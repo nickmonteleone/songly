@@ -1,4 +1,3 @@
-import { token } from "morgan";
 import { SoundcloudApi } from "./soundcloud";
 
 describe("SoundcloudApi", function (): void {
@@ -26,5 +25,12 @@ describe("SoundcloudApi", function (): void {
     const id = await SoundcloudApi.getTrackId(link);
 
     expect(id).toEqual('254111945');
+  });
+
+  test("Gets stream URL", async function (): Promise<void> {
+    const id = '254111945';
+    const url = await SoundcloudApi.getStreamUrl(id);
+
+    expect(url).toBeTruthy();
   });
 });
